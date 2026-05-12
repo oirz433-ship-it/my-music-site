@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>oirz Pro Studio | الإصدار المستقر</title>
+    <title>oirz Pro Studio | Beta</title>
     <style>
         :root {
             --primary: #8e44ad;
@@ -13,6 +13,8 @@
         }
 
         body {
+            user-select: none;
+            -webkit-user-select: none;
             background: radial-gradient(circle at center, #1a1a2e, #000000);
             min-height: 100vh;
             margin: 0;
@@ -25,6 +27,45 @@
             overflow-x: hidden;
         }
 
+        /* واجهة التنبيه (النسخة التجريبية) */
+        #betaOverlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.5s;
+        }
+
+        .beta-box {
+            background: var(--glass);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 30px;
+            text-align: center;
+            width: 350px;
+            box-shadow: 0 0 40px rgba(0, 210, 255, 0.2);
+        }
+
+        .beta-box h2 { color: var(--accent); margin-bottom: 15px; }
+        .beta-box p { font-size: 0.95rem; line-height: 1.6; color: #ccc; margin-bottom: 25px; }
+        
+        .enter-btn {
+            background: var(--accent);
+            color: black;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .enter-btn:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--accent); }
+
+        /* التصميم الأساسي للاستوديو */
         .brand-name {
             font-size: 5.5rem;
             font-weight: 900;
@@ -63,17 +104,12 @@
             margin-bottom: 20px;
             font-size: 0.85rem;
             border-right: 4px solid var(--accent);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
 
         .control-item {
             background: rgba(255,255,255,0.03);
-            padding: 15px;
-            border-radius: 18px;
-            margin-bottom: 12px;
-            text-align: right;
+            padding: 15px; border-radius: 18px; margin-bottom: 12px; text-align: right;
         }
 
         label { font-size: 0.75rem; color: #777; display: block; }
@@ -82,38 +118,30 @@
         input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; margin-top: 8px; }
 
         .btn-grid { display: flex; gap: 12px; margin-top: 25px; }
-        button {
-            flex: 1;
-            padding: 15px;
-            border-radius: 15px;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+        button { flex: 1; padding: 15px; border-radius: 15px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
 
         .play-btn { background: #fff; color: #000; }
         .save-btn { background: #2ecc71; color: white; }
 
         .discord-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--discord);
-            color: white;
-            text-decoration: none;
-            padding: 15px;
-            border-radius: 15px;
-            margin-top: 15px;
-            font-weight: bold;
-            transition: 0.3s;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--discord); color: white; text-decoration: none;
+            padding: 15px; border-radius: 15px; margin-top: 15px; font-weight: bold; transition: 0.3s;
         }
 
         .rights-footer { margin-top: 25px; font-size: 0.7rem; opacity: 0.3; }
-        .rights-footer b { color: var(--accent); }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
+
+    <!-- واجهة النسخة التجريبية -->
+    <div id="betaOverlay">
+        <div class="beta-box">
+            <h2>تنبيه هام ⚠️</h2>
+            <p>هذه نسخة تجريبية من الموقع (BETA).<br>سيتم تطويرها باستمرار وإضافة مميزات جديدة.<br>ترقبوا التحديثات الكبرى في سيرفر Discord.</p>
+            <button class="enter-btn" onclick="closeOverlay()">دخول للاستوديو</button>
+        </div>
+    </div>
 
     <div class="brand-name">oirz</div>
     <div class="welcome-text">حياك الله، استمتع في تعديل أصوات الأغاني</div>
@@ -152,7 +180,7 @@
             <button class="save-btn" id="saveBtn">حفظ التعديل</button>
         </div>
 
-        <a href="https://discord.gg" target="_blank" class="discord-btn">انضم لسيرفر Discord</a>
+        <a href="https://discord.gg/m-9" target="_blank" class="discord-btn">انضم لسيرفر Discord</a>
 
         <input type="file" id="fileIn" accept="audio/*" style="display:none">
         <button onclick="document.getElementById('fileIn').click()" style="background:none; border:none; color:#444; font-size:0.7rem; margin-top:20px; cursor:pointer;">تغيير الملف الصوتي</button>
@@ -163,15 +191,20 @@
 <audio id="audio" crossorigin="anonymous"></audio>
 
 <script>
+    function closeOverlay() {
+        document.getElementById('betaOverlay').style.opacity = '0';
+        setTimeout(() => { document.getElementById('betaOverlay').style.display = 'none'; }, 500);
+    }
+
+    document.onkeydown = function(e) {
+        if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) || (e.ctrlKey && e.keyCode == 85)) return false;
+    }
+
     const audio = document.getElementById('audio');
     let audioCtx, source, gainNode, reverbNode, wetGain, dryGain, destination, recorder, chunks = [];
 
-    // دالة تهيئة المحرك - تم تعديلها لتنظيف المسارات القديمة تماماً
     function setupEngine() {
-        if (audioCtx) {
-            audioCtx.close(); // إغلاق المحرك القديم لضمان تصفير القيم
-        }
-        
+        if (audioCtx) { audioCtx.close(); }
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         source = audioCtx.createMediaElementSource(audio);
         gainNode = audioCtx.createGain();
@@ -181,11 +214,10 @@
         destination = audioCtx.createMediaStreamDestination();
 
         const rate = audioCtx.sampleRate;
-        const length = rate * 2;
-        const impulse = audioCtx.createBuffer(2, length, rate);
+        const impulse = audioCtx.createBuffer(2, rate * 2, rate);
         for(let i=0; i<2; i++){
             let ch = impulse.getChannelData(i);
-            for(let j=0; j<length; j++) ch[j] = (Math.random()*2-1) * Math.pow(1-j/length, 2);
+            for(let j=0; j<rate*2; j++) ch[j] = (Math.random()*2-1) * Math.pow(1-j/(rate*2), 2);
         }
         reverbNode.buffer = impulse;
 
@@ -198,20 +230,22 @@
         dryGain.connect(destination);
         wetGain.connect(destination);
         
-        // استعادة القيم الحالية للأشرطة فور الرفع
         wetGain.gain.value = document.getElementById('revR').value;
         gainNode.gain.value = document.getElementById('gainR').value;
         audio.playbackRate = document.getElementById('speedR').value;
         audio.volume = document.getElementById('volRange').value;
     }
 
+    // الإصلاح النهائي لمشكلة الرفع
     document.getElementById('fileIn').onchange = (e) => {
-        const file = e.target.files[0];
+        const file = e.target.files[0]; // تأكدنا من اختيار ملف واحد بدقة
         if (file) {
             document.getElementById('songTitle').innerText = file.name;
             audio.src = URL.createObjectURL(file);
-            setupEngine(); // إعادة بناء المسار الصوتي فور الرفع
+            setupEngine();
         }
+        // تصفير القيمة للسماح برفع نفس الملف مرة أخرى إذا لزم الأمر
+        e.target.value = ""; 
     };
 
     document.getElementById('playBtn').onclick = () => {
@@ -261,7 +295,6 @@
         if (recorder && recorder.state === "recording") {
             recorder.stop();
             document.getElementById('saveBtn').innerText = "حفظ التعديل";
-            document.getElementById('saveBtn').style.background = "#2ecc71";
             return;
         }
         chunks = [];
@@ -269,15 +302,14 @@
         recorder.ondataavailable = e => chunks.push(e.data);
         recorder.onstop = () => {
             const blob = new Blob(chunks, { type: 'audio/mp3' });
-            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url; a.download = `oirz_studio_export.mp3`; a.click();
+            a.href = URL.createObjectURL(blob);
+            a.download = `oirz_studio_export.mp3`;
+            a.click();
         };
         recorder.start();
         document.getElementById('saveBtn').innerText = "إيقاف وحفظ الآن";
-        document.getElementById('saveBtn').style.background = "#e74c3c";
     };
 </script>
-
 </body>
 </html>
