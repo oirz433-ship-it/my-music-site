@@ -3,187 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>oirz Pro Studio | Beta</title>
+    <title>oirz Pro Cyber Studio</title>
     <style>
         :root {
-            --primary: #8e44ad;
-            --accent: #00d2ff;
+            --primary: #bc3cf0;
+            --accent: #00f2fe;
             --discord: #5865F2;
-            --glass: rgba(255, 255, 255, 0.08);
+            --card-bg: rgba(10, 10, 25, 0.75);
+            --glow: 0 0 25px rgba(0, 242, 254, 0.5);
         }
 
         body {
             user-select: none;
             -webkit-user-select: none;
-            background: radial-gradient(circle at center, #1a1a2e, #000000);
+            background: radial-gradient(circle at center, #0d0d1e, #020205);
             min-height: 100vh;
             margin: 0;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-family: 'Segoe UI', Tahoma, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             color: white;
             overflow-x: hidden;
         }
 
-        /* واجهة التنبيه (النسخة التجريبية) */
+        #bgCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+
+        /* واجهة التنبيه التجريبية */
         #betaOverlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(15px);
+            background: rgba(2, 2, 5, 0.95);
+            backdrop-filter: blur(20px);
             z-index: 9999;
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: 0.5s;
+            transition: 0.6s ease-in-out;
         }
 
         .beta-box {
-            background: var(--glass);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 40px;
-            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            padding: 50px 40px;
+            border-radius: 35px;
             text-align: center;
-            width: 350px;
-            box-shadow: 0 0 40px rgba(0, 210, 255, 0.2);
+            width: 380px;
+            box-shadow: inset 0 0 30px rgba(0, 242, 254, 0.05), 0 20px 50px rgba(0,0,0,0.5);
         }
 
-        .beta-box h2 { color: var(--accent); margin-bottom: 15px; }
-        .beta-box p { font-size: 0.95rem; line-height: 1.6; color: #ccc; margin-bottom: 25px; }
+        .beta-box h2 { font-size: 1.8rem; color: var(--accent); margin-bottom: 20px; letter-spacing: 2px; }
+        .beta-box p { font-size: 0.95rem; line-height: 1.8; color: #a0a5c0; margin-bottom: 30px; }
         
         .enter-btn {
-            background: var(--accent);
-            color: black;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            color: white; border: none; padding: 14px 40px; border-radius: 15px;
+            font-weight: bold; cursor: pointer; transition: 0.4s; letter-spacing: 1px;
         }
-        .enter-btn:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--accent); }
+        .enter-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: var(--glow); }
 
-        /* التصميم الأساسي للاستوديو */
+        /* الشعار الفخم المطور oirz */
+        .brand-container { text-align: center; margin-bottom: 20px; position: relative; }
         .brand-name {
-            font-size: 5.5rem;
+            font-size: 6.5rem;
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 12px;
-            background: linear-gradient(to bottom, #fff, var(--accent));
+            letter-spacing: 18px;
+            margin: 0;
+            background: linear-gradient(90deg, #ffffff, var(--accent), #ffffff, var(--primary), #ffffff);
+            background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 15px var(--accent));
-            animation: glowPulse 2s infinite alternate ease-in-out;
-            margin-bottom: 5px;
+            filter: drop-shadow(0 0 15px rgba(0, 242, 254, 0.5));
+            animation: chromeShine 6s linear infinite, floatingEffect 4s infinite ease-in-out;
         }
 
-        @keyframes glowPulse {
-            from { filter: drop-shadow(0 0 10px var(--accent)); transform: scale(1); }
-            to { filter: drop-shadow(0 0 30px var(--primary)); transform: scale(1.03); }
+        @keyframes chromeShine {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
         }
 
-        .welcome-text { color: #888; font-size: 1rem; margin-bottom: 30px; letter-spacing: 1px; }
+        @keyframes floatingEffect {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
 
+        .pulse-glow {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px; height: 150px;
+            background: radial-gradient(circle, rgba(0,242,254,0.15) 0%, rgba(188,60,240,0) 70%);
+            border-radius: 50%;
+            z-index: -1;
+            pointer-events: none;
+            transition: transform 0.1s ease-out;
+        }
+
+        /* نص الكتابة التفاعلي */
+        .welcome-text {
+            color: #8892b0;
+            font-size: 0.95rem;
+            letter-spacing: 2px;
+            font-weight: bold;
+            margin-top: 5px;
+            min-height: 20px;
+            display: inline-block;
+            border-left: 2px solid var(--accent);
+            animation: blinkCursor 0.75s step-end infinite;
+            padding-left: 5px;
+        }
+
+        @keyframes blinkCursor {
+            from, to { border-color: transparent }
+            50% { border-color: var(--accent); }
+        }
+
+        /* بطاقة الاستوديو الاحترافية */
         .studio-card {
-            background: var(--glass);
-            backdrop-filter: blur(35px);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 40px;
+            background: var(--card-bg);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 45px;
             padding: 35px;
-            width: 400px;
-            box-shadow: 0 30px 70px rgba(0,0,0,0.9);
+            width: 450px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(255, 255, 255, 0.02);
             text-align: center;
+            box-sizing: border-box;
+        }
+
+        .song-panel {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 25px;
+            padding: 20px;
+            margin-bottom: 25px;
+            position: relative;
         }
 
         #songTitle {
-            background: rgba(0,0,0,0.4);
-            padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            font-size: 0.85rem;
-            border-right: 4px solid var(--accent);
+            font-size: 0.9rem; font-weight: bold; color: #fff;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            margin-bottom: 15px; letter-spacing: 1px;
         }
 
-        .control-item {
-            background: rgba(255,255,255,0.03);
-            padding: 15px; border-radius: 18px; margin-bottom: 12px; text-align: right;
+        .seek-bar {
+            width: 100%; height: 5px; background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px; appearance: none; cursor: pointer; outline: none;
+        }
+        .seek-bar::-webkit-slider-thumb {
+            appearance: none; width: 12px; height: 12px; border-radius: 50%;
+            background: var(--accent); box-shadow: 0 0 10px var(--accent);
         }
 
-        label { font-size: 0.75rem; color: #777; display: block; }
-        .val-badge { float: left; color: var(--accent); font-weight: bold; }
+        /* شبكة التحكم بالمكسر */
+        .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        .control-knob {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 15px;
+            text-align: right;
+            transition: 0.3s;
+        }
+        .control-knob:hover { border-color: rgba(0, 242, 254, 0.3); box-shadow: inset 0 0 15px rgba(0,242,254,0.05); }
 
-        input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; margin-top: 8px; }
+        label { font-size: 0.75rem; color: #5f6580; font-weight: bold; display: block; margin-bottom: 5px; }
+        .val-badge { float: left; color: var(--accent); font-weight: 900; font-family: monospace; font-size: 0.85rem; }
 
-        .btn-grid { display: flex; gap: 12px; margin-top: 25px; }
-        button { flex: 1; padding: 15px; border-radius: 15px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .mixer-slider { width: 100%; accent-color: var(--accent); cursor: pointer; margin-top: 10px; }
 
-        .play-btn { background: #fff; color: #000; }
-        .save-btn { background: #2ecc71; color: white; }
+        .btn-grid { display: flex; gap: 15px; margin-top: 30px; }
+        button.action-btn {
+            flex: 1; padding: 18px; border-radius: 20px; border: none;
+            font-weight: 900; font-size: 0.95rem; cursor: pointer; transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            letter-spacing: 1px;
+        }
 
-        .discord-btn {
+        .play-btn { background: #ffffff; color: #020205; box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
+        .save-btn { background: linear-gradient(135deg, #00f2fe, #4facfe); color: white; box-shadow: var(--glow); }
+        .play-btn:hover, .save-btn:hover { transform: translateY(-4px); filter: brightness(1.1); }
+
+        .discord-link {
             display: flex; align-items: center; justify-content: center;
             background: var(--discord); color: white; text-decoration: none;
-            padding: 15px; border-radius: 15px; margin-top: 15px; font-weight: bold; transition: 0.3s;
+            padding: 16px; border-radius: 20px; margin-top: 20px; font-weight: bold;
+            font-size: 0.95rem; transition: 0.3s; box-shadow: 0 4px 15px rgba(88, 101, 242, 0.2);
         }
+        .discord-link:hover { background: #4752c4; transform: translateY(-2px); }
 
-        .rights-footer { margin-top: 25px; font-size: 0.7rem; opacity: 0.3; }
+        .rights-footer { margin-top: 30px; font-size: 0.7rem; color: #3f4356; letter-spacing: 2px; }
+        #visualizer { width: 100%; height: 50px; margin-bottom: 10px; display: block; }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- واجهة النسخة التجريبية -->
+    <canvas id="bgCanvas"></canvas>
+
     <div id="betaOverlay">
         <div class="beta-box">
-            <h2>تنبيه هام ⚠️</h2>
-            <p>هذه نسخة تجريبية من الموقع (BETA).<br>سيتم تطويرها باستمرار وإضافة مميزات جديدة.<br>ترقبوا التحديثات الكبرى في سيرفر Discord.</p>
-            <button class="enter-btn" onclick="closeOverlay()">دخول للاستوديو</button>
+            <h2>تنبيه نظام الاستوديو ⚠️</h2>
+            <p>أنت دخلت النسخة التجريبية المتقدمة (BETA).<br>يجري حالياً تطوير فلاتر الصوت وهندسة المحرك.<br>تابع خطة التطوير والمميزات الجديدة عبر الديسكورد.</p>
+            <button class="enter-btn" onclick="closeOverlay()">دخول نظام المكسر</button>
         </div>
     </div>
 
-    <div class="brand-name">oirz</div>
-    <div class="welcome-text">حياك الله، استمتع في تعديل أصوات الأغاني</div>
+    <div class="brand-container">
+        <div class="pulse-glow" id="pulseGlow"></div>
+        <h1 class="brand-name">oirz</h1>
+        <div><span class="welcome-text" id="typewriterText"></span></div>
+    </div>
 
     <div class="studio-card">
-        <div id="songTitle">ارفع ملف MP3 للبدء</div>
-
-        <input type="range" id="seekBar" value="0" step="0.1" style="height: 4px;">
-        <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: #555; margin-bottom: 20px;">
-            <span id="curT">00:00</span>
-            <span id="durT">00:00</span>
+        <div class="song-panel">
+            <canvas id="visualizer"></canvas>
+            <div id="songTitle">نظام الصوت معطل، ارفع ملف للبدء...</div>
+            <input type="range" id="seekBar" class="seek-bar" value="0" step="0.1">
+            <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: #3f4356; margin-top: 8px; font-family: monospace;">
+                <span id="curT">00:00</span>
+                <span id="durT">00:00</span>
+            </div>
         </div>
 
-        <div class="control-item">
-            <label>مستوى الصوت <span class="val-badge" id="volV">100%</span></label>
-            <input type="range" id="volRange" min="0" max="1" step="0.01" value="1">
-        </div>
-
-        <div class="control-item">
-            <label>صدى الكرت الفضي <span class="val-badge" id="revV">0%</span></label>
-            <input type="range" id="revR" min="0" max="1" step="0.05" value="0">
-        </div>
-
-        <div class="control-item">
-            <label>تضخيم الصوت <span class="val-badge" id="gainV">1.0x</span></label>
-            <input type="range" id="gainR" min="1" max="4" step="0.1" value="1">
-        </div>
-
-        <div class="control-item">
-            <label>سرعة التشغيل <span class="val-badge" id="speedV">1.0x</span></label>
-            <input type="range" id="speedR" min="0.5" max="2.5" step="0.1" value="1">
+        <div class="controls-grid">
+            <div class="control-knob">
+                <label>مستوى الصوت <span class="val-badge" id="volV">100%</span></label>
+                <input type="range" id="volRange" class="mixer-slider" min="0" max="1" step="0.01" value="1">
+            </div>
+            <div class="control-knob">
+                <label>صدى الكرت الفضي <span class="val-badge" id="revV">0%</span></label>
+                <input type="range" id="revR" class="mixer-slider" min="0" max="1" step="0.05" value="0">
+            </div>
+            <div class="control-knob">
+                <label>تضخيم الصوت الاحترافي <span class="val-badge" id="gainV">1.0x</span></label>
+                <input type="range" id="gainR" class="mixer-slider" min="1" max="4" step="0.1" value="1">
+            </div>
+            <div class="control-knob">
+                <label>سرعة التشغيل <span class="val-badge" id="speedV">1.0x</span></label>
+                <input type="range" id="speedR" class="mixer-slider" min="0.5" max="2.5" step="0.1" value="1">
+            </div>
+            <div class="control-knob" style="grid-column: span 2;">
+                <label>توزيع الصوت ثلاثي الأبعاد 3D <span class="val-badge" id="panV">وسط</span></label>
+                <input type="range" id="panRange" class="mixer-slider" min="-1" max="1" step="0.1" value="0">
+            </div>
         </div>
 
         <div class="btn-grid">
-            <button class="play-btn" id="playBtn">تشغيل / إيقاف</button>
-            <button class="save-btn" id="saveBtn">حفظ التعديل</button>
+            <button class="action-btn play-btn" id="playBtn">تشغيل / إيقاف</button>
+            <button class="action-btn save-btn" id="saveBtn">حفظ التعديل</button>
         </div>
 
-        <a href="https://discord.gg/m-9" target="_blank" class="discord-btn">انضم لسيرفر Discord</a>
+        <a href="https://discord.gg/m-9" target="_blank" rel="noopener noreferrer" class="discord-link">انضم لسيرفر Discord</a>
 
         <input type="file" id="fileIn" accept="audio/*" style="display:none">
-        <button onclick="document.getElementById('fileIn').click()" style="background:none; border:none; color:#444; font-size:0.7rem; margin-top:20px; cursor:pointer;">تغيير الملف الصوتي</button>
+        <button onclick="document.getElementById('fileIn').click()" style="background:none; border:none; color:#3f4356; font-size:0.75rem; margin-top:25px; cursor:pointer; font-weight:bold; letter-spacing:1px;">تغيير الملف الصوتي</button>
     </div>
 
     <div class="rights-footer">جميع الحقوق محفوظة للمطور <b>oirz</b></div>
@@ -191,9 +266,22 @@
 <audio id="audio" crossorigin="anonymous"></audio>
 
 <script>
+    const textToType = "حياك الله، استمتع في تعديل أصوات الأغاني";
+    let textIndex = 0;
+    function typeWriter() {
+        if (textIndex < textToType.length) {
+            document.getElementById("typewriterText").innerHTML += textToType.charAt(textIndex);
+            textIndex++;
+            setTimeout(typeWriter, 100);
+        }
+    }
+
     function closeOverlay() {
         document.getElementById('betaOverlay').style.opacity = '0';
-        setTimeout(() => { document.getElementById('betaOverlay').style.display = 'none'; }, 500);
+        setTimeout(() => { 
+            document.getElementById('betaOverlay').style.display = 'none'; 
+            typeWriter(); 
+        }, 600);
     }
 
     document.onkeydown = function(e) {
@@ -201,50 +289,101 @@
     }
 
     const audio = document.getElementById('audio');
-    let audioCtx, source, gainNode, reverbNode, wetGain, dryGain, destination, recorder, chunks = [];
+    let audioCtx, source, gainNode, reverbNode, wetGain, dryGain, pannerNode, destination, recorder, chunks = [], analyser;
 
     function setupEngine() {
-        if (audioCtx) { audioCtx.close(); }
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        source = audioCtx.createMediaElementSource(audio);
-        gainNode = audioCtx.createGain();
-        reverbNode = audioCtx.createConvolver();
-        wetGain = audioCtx.createGain();
-        dryGain = audioCtx.createGain();
-        destination = audioCtx.createMediaStreamDestination();
-
-        const rate = audioCtx.sampleRate;
-        const impulse = audioCtx.createBuffer(2, rate * 2, rate);
-        for(let i=0; i<2; i++){
-            let ch = impulse.getChannelData(i);
-            for(let j=0; j<rate*2; j++) ch[j] = (Math.random()*2-1) * Math.pow(1-j/(rate*2), 2);
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
-        reverbNode.buffer = impulse;
+        
+        // مسح وإعادة بناء الـ source node لمنع تعليق المتصفح مع ملفات blob المتغيرة
+        if (source) {
+            try { source.disconnect(); } catch(e){}
+        }
+        
+        source = audioCtx.createMediaElementSource(audio);
+        
+        if (!gainNode) {
+            gainNode = audioCtx.createGain();
+            reverbNode = audioCtx.createConvolver();
+            wetGain = audioCtx.createGain();
+            dryGain = audioCtx.createGain();
+            pannerNode = audioCtx.createStereoPanner();
+            analyser = audioCtx.createAnalyser();
+            destination = audioCtx.createMediaStreamDestination();
+
+            const rate = audioCtx.sampleRate;
+            const length = rate * 3;
+            const impulse = audioCtx.createBuffer(2, length, rate);
+            for(let i=0; i<2; i++){
+                let ch = impulse.getChannelData(i);
+                for(let j=0; j<length; j++) ch[j] = (Math.random()*2-1) * Math.pow(1-j/length, 2.5);
+            }
+            reverbNode.buffer = impulse;
+
+            gainNode.connect(dryGain);
+            gainNode.connect(reverbNode);
+            reverbNode.connect(wetGain);
+            
+            dryGain.connect(pannerNode);
+            wetGain.connect(pannerNode);
+            
+            pannerNode.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            pannerNode.connect(destination);
+        }
 
         source.connect(gainNode);
-        gainNode.connect(dryGain);
-        gainNode.connect(reverbNode);
-        reverbNode.connect(wetGain);
-        dryGain.connect(audioCtx.destination);
-        wetGain.connect(audioCtx.destination);
-        dryGain.connect(destination);
-        wetGain.connect(destination);
         
         wetGain.gain.value = document.getElementById('revR').value;
         gainNode.gain.value = document.getElementById('gainR').value;
+        pannerNode.pan.value = document.getElementById('panRange').value;
         audio.playbackRate = document.getElementById('speedR').value;
         audio.volume = document.getElementById('volRange').value;
+
+        startVisualizer();
     }
 
-    // الإصلاح النهائي لمشكلة الرفع
+    function startVisualizer() {
+        const canvas = document.getElementById('visualizer');
+        const ctx = canvas.getContext('2d');
+        const pulseGlow = document.getElementById('pulseGlow');
+        analyser.fftSize = 64;
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+
+        function draw() {
+            requestAnimationFrame(draw);
+            analyser.getByteFrequencyData(dataArray);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const barWidth = (canvas.width / bufferLength) * 1.5;
+            let x = 0;
+            
+            let bassSum = 0;
+            for(let i=0; i<5; i++) bassSum += dataArray[i];
+            let scale = 1 + (bassSum / 500);
+            pulseGlow.style.transform = `translate(-50%, -50%) scale(${scale})`;
+
+            for(let i = 0; i < bufferLength; i++) {
+                let barHeight = dataArray[i] / 5;
+                let gradient = ctx.createLinearGradient(0, canvas.height, 0, 0);
+                gradient.addColorStop(0, '#bc3cf0');
+                gradient.addColorStop(1, '#00f2fe');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+                x += barWidth + 2;
+            }
+        }
+        draw();
+    }
+
     document.getElementById('fileIn').onchange = (e) => {
-        const file = e.target.files[0]; // تأكدنا من اختيار ملف واحد بدقة
+        const file = e.target.files[0];
         if (file) {
             document.getElementById('songTitle').innerText = file.name;
             audio.src = URL.createObjectURL(file);
             setupEngine();
         }
-        // تصفير القيمة للسماح برفع نفس الملف مرة أخرى إذا لزم الأمر
         e.target.value = ""; 
     };
 
@@ -271,6 +410,12 @@
     document.getElementById('speedR').oninput = (e) => {
         audio.playbackRate = e.target.value;
         document.getElementById('speedV').innerText = e.target.value + 'x';
+    };
+
+    document.getElementById('panRange').oninput = (e) => {
+        if (pannerNode) pannerNode.pan.value = e.target.value;
+        let side = e.target.value < 0 ? "يسار" : (e.target.value > 0 ? "يمين" : "وسط");
+        document.getElementById('panV').innerText = side;
     };
 
     audio.ontimeupdate = () => {
@@ -304,12 +449,44 @@
             const blob = new Blob(chunks, { type: 'audio/mp3' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = `oirz_studio_export.mp3`;
+            a.download = `oirz_cyber_master.mp3`;
             a.click();
         };
         recorder.start();
         document.getElementById('saveBtn').innerText = "إيقاف وحفظ الآن";
     };
+
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    let particles = [];
+    class Particle {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 1.5;
+            this.speedX = Math.random() * 0.4 - 0.2;
+            this.speedY = Math.random() * 0.4 - 0.2;
+        }
+        update() {
+            this.x += this.speedX; this.y += this.speedY;
+            if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
+            if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+        }
+        draw() {
+            ctx.fillStyle = 'rgba(0, 242, 254, 0.15)';
+            ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+        }
+    }
+    for (let i = 0; i < 70; i++) particles.push(new Particle());
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(animate);
+    }
+    animate();
+    window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
 </script>
 </body>
 </html>
